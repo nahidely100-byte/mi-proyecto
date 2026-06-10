@@ -373,7 +373,6 @@
     }
 
     .mini-card,
-    .benefit-card,
     .story-card,
     .final-panel {
       border: 1px solid var(--line);
@@ -537,42 +536,137 @@
     .benefit-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
+      gap: clamp(28px, 4vw, 52px) 24px;
+      align-items: start;
     }
 
     .benefit-card {
-      min-height: 220px;
-      padding: 24px;
-      transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
+      --delay: 0s;
+      position: relative;
+      min-width: 0;
+      text-align: center;
+      animation: benefitFloat 6s ease-in-out var(--delay) infinite;
     }
 
-    .benefit-card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(255,255,255,0.3);
-      background: linear-gradient(180deg, rgba(255,255,255,0.095), rgba(255,255,255,0.04));
-      box-shadow: 0 34px 110px rgba(0,0,0,0.58), 0 0 45px rgba(255,255,255,0.08);
-    }
+    .benefit-card:nth-child(2) { --delay: -1s; }
+    .benefit-card:nth-child(3) { --delay: -2s; }
+    .benefit-card:nth-child(4) { --delay: -3s; }
+    .benefit-card:nth-child(5) { --delay: -4s; }
+    .benefit-card:nth-child(6) { --delay: -5s; }
 
-    .icon {
-      width: 42px;
+    .benefit-orbit {
+      position: relative;
+      width: min(260px, 82vw);
       aspect-ratio: 1;
+      margin: 0 auto 22px;
       display: grid;
       place-items: center;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: var(--radius);
-      color: var(--white);
-      background: rgba(255,255,255,0.06);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+      isolation: isolate;
+      transition: transform 420ms cubic-bezier(.2,.8,.2,1);
     }
 
-    .icon svg {
-      width: 21px;
-      height: 21px;
+    .benefit-orbit::before,
+    .benefit-orbit::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .benefit-orbit::before {
+      inset: -8px;
+      z-index: -2;
+      padding: 1px;
+      background: conic-gradient(from 0deg, transparent 0 18%, rgba(143,214,255,0.95) 24%, transparent 34% 60%, rgba(255,255,255,0.75) 68%, transparent 78%);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: orbitSpin 9s linear infinite;
+    }
+
+    .benefit-orbit::after {
+      inset: 7%;
+      z-index: -1;
+      background: rgba(11,132,255,0.24);
+      filter: blur(34px);
+      opacity: 0.72;
+      transition: opacity 350ms ease, transform 350ms ease;
+    }
+
+    .benefit-image {
+      width: 88%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.28);
+      border-radius: 50%;
+      background: #0b0d10;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.58), 0 0 38px rgba(143,214,255,0.14), inset 0 0 0 5px rgba(255,255,255,0.025);
+      transform: translateZ(0);
+    }
+
+    .benefit-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+      filter: saturate(0.82) contrast(1.08) brightness(0.88);
+      transform: scale(1.04);
+      transition: transform 700ms cubic-bezier(.2,.8,.2,1), filter 500ms ease;
+    }
+
+    .benefit-card:hover .benefit-orbit {
+      transform: translateY(-8px) scale(1.035);
+    }
+
+    .benefit-card:hover .benefit-orbit::after {
+      opacity: 1;
+      transform: scale(1.12);
+    }
+
+    .benefit-card:hover .benefit-image img {
+      transform: scale(1.12);
+      filter: saturate(1) contrast(1.04) brightness(1);
+    }
+
+    .benefit-copy {
+      max-width: 320px;
+      min-height: 154px;
+      margin-inline: auto;
+      padding: 22px 20px;
+      border: 1px solid rgba(255,255,255,0.11);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.025));
+      box-shadow: 0 24px 70px rgba(0,0,0,0.34);
+      backdrop-filter: blur(18px);
+      transition: border-color 300ms ease, background 300ms ease;
+    }
+
+    .benefit-card:hover .benefit-copy {
+      border-color: rgba(143,214,255,0.34);
+      background: linear-gradient(180deg, rgba(143,214,255,0.10), rgba(255,255,255,0.035));
+    }
+
+    .benefit-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .benefit-number::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: currentColor;
     }
 
     .benefit-card h3 {
-      margin: 26px 0 10px;
-      font-size: 1.18rem;
+      margin: 10px 0 9px;
+      font-size: 1.22rem;
       letter-spacing: 0;
     }
 
@@ -580,6 +674,12 @@
       margin: 0;
       color: var(--muted);
       line-height: 1.6;
+    }
+
+    .benefit-cta {
+      display: flex;
+      justify-content: center;
+      margin-top: clamp(40px, 6vw, 70px);
     }
 
     .event-section {
@@ -841,6 +941,15 @@
       50% { transform: translateY(-14px); }
     }
 
+    @keyframes orbitSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes benefitFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-9px); }
+    }
+
     @media (max-width: 980px) {
       .nav-links { display: none; }
 
@@ -904,6 +1013,22 @@
       .benefit-grid,
       .stat-stack {
         grid-template-columns: 1fr;
+      }
+
+      .benefit-grid {
+        gap: 42px;
+      }
+
+      .benefit-card {
+        animation-duration: 7s;
+      }
+
+      .benefit-copy {
+        min-height: 0;
+      }
+
+      .benefit-orbit {
+        width: min(250px, 76vw);
       }
 
       .hero-visual {
@@ -976,6 +1101,16 @@
       0%, 100% { transform: translateY(0) scale(1); }
       50% { transform: translateY(-2px) scale(1.018); }
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1003,7 +1138,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div class="hero-copy-block reveal">
-          <p class="eyebrow">Chiclayo | 16 de Mayo | Presencial</p>
+          <p class="eyebrow">Consulta el próximo taller ahora | Cupos limitados</p>
           <h1>IA para crear, vender y <span class="sheen">crecer</span>.</h1>
           <p class="subtitle">Una experiencia presencial de alto nivel para aprender Inteligencia Artificial y ventas digitales con una ruta clara, moderna y accionable.</p>
           <div class="hero-actions">
@@ -1034,41 +1169,62 @@
     <section id="beneficios">
       <div class="shell">
         <div class="section-head reveal">
-          <p class="section-kicker">Beneficios</p>
-          <h2>Todo lo que necesitas para dejar de improvisar.</h2>
-          <p>Una landing no vende por gritar mas. Una habilidad tampoco. Este taller te da claridad, metodo y una sensacion inmediata de avance.</p>
+          <p class="section-kicker">Una ruta clara, aunque hoy empieces desde cero</p>
+          <h2>De sentirte atrás a usar la IA con seguridad.</h2>
+          <p>No necesitas ser experta ni saber de tecnología. Aprendes acompañada, con ejemplos reales y pasos que puedes aplicar desde el primer día.</p>
         </div>
         <div class="benefit-grid">
           <article class="benefit-card reveal">
-            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a7 7 0 0 0-4 12.75V17h8v-2.25A7 7 0 0 0 12 2Z"></path><path d="M9 21h6"></path></svg></div>
-            <h3>Prompts que venden</h3>
-            <p>Aprende a pedirle a la IA mensajes, ideas y ofertas con enfoque comercial.</p>
+            <div class="benefit-orbit"><div class="benefit-image"><img src="imagen1.png" alt="Mujer aprendiendo a trabajar con inteligencia artificial"></div></div>
+            <div class="benefit-copy">
+              <span class="benefit-number">01 · Claridad</span>
+              <h3>Prompts que sí te entienden</h3>
+              <p>Aprende a pedirle a la IA mensajes, ideas y ofertas con intención comercial.</p>
+            </div>
           </article>
           <article class="benefit-card reveal">
-            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5"></path><path d="M4 19h16"></path><path d="m7 15 4-4 3 3 5-7"></path></svg></div>
-            <h3>Ventas digitales</h3>
-            <p>Convierte contenido, anuncios y conversaciones en oportunidades reales.</p>
+            <div class="benefit-orbit"><div class="benefit-image"><img src="imagen2.png" alt="Emprendedora usando herramientas digitales para vender"></div></div>
+            <div class="benefit-copy">
+              <span class="benefit-number">02 · Ventas</span>
+              <h3>Convierte atención en clientes</h3>
+              <p>Crea conversaciones y ofertas que acercan a las personas a una decisión.</p>
+            </div>
           </article>
           <article class="benefit-card reveal">
-            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v6H4z"></path><path d="M4 14h7v6H4z"></path><path d="M15 14h5v6h-5z"></path></svg></div>
-            <h3>Contenido premium</h3>
-            <p>Crea guiones, publicaciones, ideas y estructuras con velocidad y criterio.</p>
+            <div class="benefit-orbit"><div class="benefit-image"><img src="imagen3.png" alt="Creadora desarrollando contenido con inteligencia artificial"></div></div>
+            <div class="benefit-copy">
+              <span class="benefit-number">03 · Contenido</span>
+              <h3>Ideas que dejan de quedarse en borrador</h3>
+              <p>Genera guiones y publicaciones con más velocidad, estructura y personalidad.</p>
+            </div>
           </article>
           <article class="benefit-card reveal">
-            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 7l8 4 8-4-8-4Z"></path><path d="M4 12l8 4 8-4"></path><path d="M4 17l8 4 8-4"></path></svg></div>
-            <h3>Metodo simple</h3>
-            <p>Una ruta limpia para usar herramientas de IA sin saturarte ni perder tiempo.</p>
+            <div class="benefit-orbit"><div class="benefit-image"><img src="imagen4.png" alt="Profesional siguiendo un método simple de inteligencia artificial"></div></div>
+            <div class="benefit-copy">
+              <span class="benefit-number">04 · Método</span>
+              <h3>Sin tecnicismos ni saturación</h3>
+              <p>Sigue una ruta sencilla para elegir herramientas y usarlas con confianza.</p>
+            </div>
           </article>
           <article class="benefit-card reveal">
-            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></div>
-            <h3>Accion inmediata</h3>
-            <p>Sales con ideas listas para aplicar en negocio, estudio, contenido o servicios.</p>
+            <div class="benefit-orbit"><div class="benefit-image"><img src="imagen5.png" alt="Emprendedora aplicando inteligencia artificial desde su teléfono"></div></div>
+            <div class="benefit-copy">
+              <span class="benefit-number">05 · Acción</span>
+              <h3>Aplica lo aprendido de inmediato</h3>
+              <p>Sales con ideas listas para tu negocio, contenido, trabajo o nuevos servicios.</p>
+            </div>
           </article>
           <article class="benefit-card reveal">
-            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div>
-            <h3>Ventaja temprana</h3>
-            <p>Aprende ahora, mientras muchos todavia estan mirando desde afuera.</p>
+            <div class="benefit-orbit"><div class="benefit-image"><img src="imagen6.png" alt="Mujer segura al mirar nuevas oportunidades digitales"></div></div>
+            <div class="benefit-copy">
+              <span class="benefit-number">06 · Confianza</span>
+              <h3>Avanza acompañada</h3>
+              <p>Resuelve dudas en un espacio cercano y descubre que también puedes hacerlo.</p>
+            </div>
           </article>
+        </div>
+        <div class="benefit-cta reveal">
+          <a class="btn luxury js-whatsapp magnetic" href="#">Quiero saber si este taller es para mí</a>
         </div>
       </div>
     </section>
@@ -1097,11 +1253,11 @@
       <div class="shell">
         <div class="final-panel reveal">
           <div>
-            <p class="section-kicker">Acceso prioritario</p>
+            <p class="section-kicker">Cupos limitados</p>
             <h2>Si sientes que la IA es el siguiente paso, este es tu momento.</h2>
             <p>Reserva tu cupo por WhatsApp. Recibe detalles de ubicacion, horario e inversion sin perder tiempo.</p>
           </div>
-          <a class="btn luxury js-whatsapp magnetic" href="#">Obtener acceso exclusivo</a>
+          <a class="btn luxury js-whatsapp magnetic" href="#">Consultar próximo taller</a>
         </div>
       </div>
     </section>
@@ -1133,12 +1289,12 @@
   </a>
 
   <div class="mobile-cta">
-    <a class="btn luxury js-whatsapp" href="#">Reservar mi acceso</a>
+    <a class="btn luxury js-whatsapp" href="#">Quiero mi cupo por WhatsApp</a>
   </div>
 
   <script>
     const WHATSAPP_NUMBER = "51913832072";
-    const WHATSAPP_MESSAGE = "Hola, quiero acceso prioritario al Taller Presencial de Inteligencia Artificial en Chiclayo.";
+    const WHATSAPP_MESSAGE = "Hola Nahidely, vi la página y quiero información del próximo Taller Presencial de Inteligencia Artificial. ¿Aún hay cupos disponibles?";
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
     document.querySelectorAll(".js-whatsapp").forEach((link) => {
@@ -1157,6 +1313,12 @@
     }, { threshold: 0.14 });
 
     document.querySelectorAll(".reveal").forEach((element) => observer.observe(element));
+
+    window.setTimeout(() => {
+      document.querySelectorAll(".reveal:not(.visible)").forEach((element) => {
+        element.classList.add("visible");
+      });
+    }, 1200);
 
     window.addEventListener("pointermove", (event) => {
       const x = Math.round((event.clientX / window.innerWidth) * 100);
